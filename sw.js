@@ -1,5 +1,5 @@
 const CACHE='mis-compras-v1';
-const ASSETS=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
+const ASSETS=['./','./index.html','./manifest.webmanifest','./icon-192-1.png','./icon-512-1.png'];
 
 self.addEventListener('install',e=>
   e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)))

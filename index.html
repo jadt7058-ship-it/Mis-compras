@@ -1,0 +1,1019 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111111">
+
+<title>Mis Compras</title>
+
+<link rel="manifest" href="manifest.webmanifest">
+
+<style>
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f6f6f6;
+  color:#171717;
+}
+
+.wrap{
+  max-width:700px;
+  margin:auto;
+  padding:16px 14px 90px;
+}
+
+.screen{display:none}
+.screen.active{display:block}
+
+h1{margin:0 0 5px}
+
+.muted{
+  color:#6b6b6b;
+  font-size:14px;
+}
+
+.card,.item,.list{
+  background:#fff;
+  border:1px solid #ddd;
+  border-radius:14px;
+  padding:12px;
+  margin-top:10px;
+}
+
+button,input,textarea{
+  font:inherit;
+}
+
+button{
+  border:0;
+  border-radius:10px;
+  padding:11px 13px;
+  font-weight:700;
+}
+
+.primary{
+  background:#111;
+  color:white;
+}
+
+.soft{
+  background:#e9e9e9;
+}
+
+.danger{
+  background:#f9e5e3;
+  color:#a51c14;
+}
+
+.full{width:100%}
+
+.row{
+  display:flex;
+  gap:8px;
+}
+
+.grow{flex:1}
+
+input,textarea{
+  width:100%;
+  box-sizing:border-box;
+  border:1px solid #ddd;
+  border-radius:10px;
+  padding:11px;
+  background:white;
+}
+
+textarea{
+  min-height:120px;
+}
+
+.top{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.back{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  font-size:20px;
+}
+
+.title{
+  font-size:21px;
+  font-weight:800;
+}
+
+.list{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.badge{
+  background:#eee;
+  border-radius:20px;
+  padding:6px 10px;
+  font-weight:800;
+}
+
+.tabs{
+  display:flex;
+  gap:8px;
+  margin-top:12px;
+}
+
+.tabs button{
+  flex:1;
+}
+
+.tabs .on{
+  background:#111;
+  color:white;
+}
+
+.items{
+  margin-top:10px;
+}
+
+.item{
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.check{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  font-size:20px;
+}
+
+.code{
+  font-size:12px;
+  color:#777;
+}
+
+.name{
+  font-size:17px;
+}
+
+.done{
+  opacity:.65;
+}
+
+.bottom{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:white;
+  border-top:1px solid #ddd;
+  padding:10px 14px;
+}
+
+.bottom>div{
+  max-width:700px;
+  margin:auto;
+  display:flex;
+  gap:8px;
+}
+
+.bottom button{
+  flex:1;
+}
+
+.hide{
+  display:none!important;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<section id="home" class="screen active">
+
+<h1>Mis Compras</h1>
+<div class="muted">Crea las listas que quieras.</div>
+
+<button id="newBtn" class="primary full" style="margin-top:14px">
++ Nueva lista
+</button>
+
+<div id="lists"></div>
+
+<div class="card">
+<b>Historial reciente</b>
+<div id="hist" class="muted" style="margin-top:8px"></div>
+</div>
+
+</section>
+
+
+<section id="new" class="screen">
+
+<div class="top">
+<button class="back soft" onclick="show('home')">‹</button>
+
+<div>
+<div class="title">Nueva lista</div>
+<div class="muted">Nombre libre + categoría opcional.</div>
+</div>
+</div>
+
+<div class="card">
+
+<div class="muted">Nombre</div>
+<input id="newTitle" placeholder="Ej. Ferretería Truper">
+
+<div class="muted" style="margin-top:10px">Categoría</div>
+<input id="newCat" placeholder="Ej. Ferretería tienda">
+
+<div class="muted" style="margin-top:10px">
+Pegar varios productos
+</div>
+
+<textarea id="newBulk"
+placeholder="21529 Brocha Pretul 4
+44303 Cinchos 15 cm"></textarea>
+
+<button id="createBtn" class="primary full">
+Crear lista
+</button>
+
+</div>
+
+</section>
+
+
+<section id="detail" class="screen">
+
+<div class="top">
+
+<button class="back soft" onclick="show('home')">‹</button>
+
+<div class="grow">
+<div id="dTitle" class="title"></div>
+<div id="count" class="muted"></div>
+</div>
+
+</div>
+
+
+<div class="row" style="margin-top:12px">
+
+<input id="quick" class="grow"
+placeholder="Agregar producto...">
+
+<button id="plus" class="primary">+</button>
+
+</div>
+
+
+<div class="card">
+
+<b>Pegar varios</b>
+
+<textarea id="bulk"
+placeholder="Pega varios productos, uno por renglón"></textarea>
+
+<button id="bulkBtn" class="soft full">
+Agregar productos
+</button>
+
+</div>
+
+
+<input id="search"
+style="margin-top:12px"
+placeholder="Buscar producto o código...">
+
+
+<div class="tabs">
+<button id="pTab" class="on">Pendientes</button>
+<button id="dTab">Comprados</button>
+</div>
+
+
+<div id="pending" class="items"></div>
+
+<div id="done" class="items hide"></div>
+
+
+<div class="card row">
+
+<button id="undo" class="soft grow">
+↶ Deshacer
+</button>
+
+<button id="rename" class="soft grow">
+Renombrar
+</button>
+
+<button id="del" class="danger grow">
+Borrar
+</button>
+
+</div>
+
+</section>
+
+</div>
+
+
+<div id="bottom" class="bottom hide">
+
+<div>
+
+<button class="soft" onclick="show('home')">
+Mis listas
+</button>
+
+<button class="primary"
+onclick="document.getElementById('quick').focus()">
++ Agregar
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+const K='mis_compras_v2';
+
+let db={
+  lists:[],
+  history:[]
+};
+
+let cur=null;
+let tab='p';
+
+
+try{
+  db=JSON.parse(localStorage.getItem(K))||db;
+}catch(e){}
+
+if(!db.history) db.history=[];
+
+
+function save(){
+  localStorage.setItem(K,JSON.stringify(db));
+}
+
+
+function uid(){
+  return Date.now()+Math.floor(Math.random()*99999);
+}
+
+
+function parse(s){
+
+  s=s.trim();
+
+  if(!s) return null;
+
+  let m=s.match(/^(\d{3,})\s+(.+)$/);
+
+  return m
+  ? {code:m[1],name:m[2]}
+  : {code:'',name:s};
+}
+
+
+function show(id){
+
+  document.querySelectorAll('.screen')
+  .forEach(x=>x.classList.remove('active'));
+
+  document.getElementById(id)
+  .classList.add('active');
+
+  document.getElementById('bottom')
+  .classList.toggle('hide',id!='detail');
+
+  if(id=='home') home();
+
+  if(id=='detail') detail();
+}
+
+
+function home(){
+
+  let c=document.getElementById('lists');
+
+  c.innerHTML='';
+
+  if(!db.lists.length){
+
+    c.innerHTML=
+    '<div class="muted" style="padding:24px;text-align:center">Aún no tienes listas.</div>';
+
+  }
+
+
+  db.lists
+  .slice()
+  .sort((a,b)=>b.updated-a.updated)
+  .forEach(l=>{
+
+    let p=l.items.filter(i=>!i.done).length;
+
+    let e=document.createElement('div');
+
+    e.className='list';
+
+    e.innerHTML=`
+
+    <div class="grow">
+
+    <b>${l.title}</b>
+
+    <div class="muted">
+
+    ${l.category ? l.category+' · ' : ''}
+
+    ${l.items.length-p}/${l.items.length} comprados
+
+    </div>
+
+    </div>
+
+    <div class="badge">${p}</div>
+
+    `;
+
+
+    e.onclick=()=>{
+
+      cur=l.id;
+
+      tab='p';
+
+      show('detail');
+
+    };
+
+
+    c.appendChild(e);
+
+  });
+
+
+  document.getElementById('hist').innerHTML=
+
+  db.history
+
+  .slice(-6)
+
+  .reverse()
+
+  .map(h=>`<div>${h.name} · ${h.list}</div>`)
+
+  .join('')
+
+  ||
+
+  'Aún no hay compras registradas.';
+
+}
+
+
+function create(){
+
+  let t=newTitle.value.trim();
+
+  if(!t){
+
+    alert('Ponle un nombre a la lista.');
+
+    return;
+
+  }
+
+
+  let l={
+
+    id:uid(),
+
+    title:t,
+
+    category:newCat.value.trim(),
+
+    updated:Date.now(),
+
+    items:[],
+
+    undo:[]
+
+  };
+
+
+  newBulk.value
+
+  .split(/\n/)
+
+  .map(parse)
+
+  .filter(Boolean)
+
+  .forEach(x=>{
+
+    l.items.push({
+
+      id:uid(),
+
+      ...x,
+
+      done:false
+
+    });
+
+  });
+
+
+  db.lists.push(l);
+
+  save();
+
+
+  newTitle.value='';
+
+  newCat.value='';
+
+  newBulk.value='';
+
+
+  cur=l.id;
+
+  show('detail');
+
+}
+
+
+function L(){
+
+  return db.lists.find(x=>x.id==cur);
+
+}
+
+
+function addOne(){
+
+  let l=L();
+
+  let x=parse(quick.value);
+
+  if(!x) return;
+
+
+  let i={
+
+    id:uid(),
+
+    ...x,
+
+    done:false
+
+  };
+
+
+  l.items.push(i);
+
+  l.undo.push({
+
+    type:'add',
+
+    ids:[i.id]
+
+  });
+
+
+  l.updated=Date.now();
+
+  quick.value='';
+
+  save();
+
+  detail();
+
+}
+
+
+function addBulk(){
+
+  let l=L();
+
+  let ids=[];
+
+
+  bulk.value
+
+  .split(/\n/)
+
+  .map(parse)
+
+  .filter(Boolean)
+
+  .forEach(x=>{
+
+    let i={
+
+      id:uid(),
+
+      ...x,
+
+      done:false
+
+    };
+
+
+    ids.push(i.id);
+
+    l.items.push(i);
+
+  });
+
+
+  if(ids.length){
+
+    l.undo.push({
+
+      type:'add',
+
+      ids
+
+    });
+
+  }
+
+
+  bulk.value='';
+
+  l.updated=Date.now();
+
+  save();
+
+  detail();
+
+}
+
+
+function toggle(id){
+
+  let l=L();
+
+  let i=l.items.find(x=>x.id==id);
+
+
+  l.undo.push({
+
+    type:'toggle',
+
+    id,
+
+    prev:i.done
+
+  });
+
+
+  i.done=!i.done;
+
+  l.updated=Date.now();
+
+
+  if(i.done){
+
+    db.history.push({
+
+      itemId:i.id,
+
+      name:i.name,
+
+      list:l.title,
+
+      category:l.category,
+
+      date:Date.now()
+
+    });
+
+  }
+
+  else{
+
+    let n=db.history
+    .map(x=>x.itemId)
+    .lastIndexOf(i.id);
+
+    if(n>=0){
+
+      db.history.splice(n,1);
+
+    }
+
+  }
+
+
+  save();
+
+  detail();
+
+}
+
+
+function undoLast(){
+
+  let l=L();
+
+  let u=l.undo.pop();
+
+  if(!u) return;
+
+
+  if(u.type=='add'){
+
+    l.items=l.items.filter(
+
+      x=>!u.ids.includes(x.id)
+
+    );
+
+  }
+
+
+  else{
+
+    let i=l.items.find(
+
+      x=>x.id==u.id
+
+    );
+
+
+    let was=i.done;
+
+    i.done=u.prev;
+
+
+    if(was && !u.prev){
+
+      let n=db.history
+      .map(x=>x.itemId)
+      .lastIndexOf(i.id);
+
+
+      if(n>=0){
+
+        db.history.splice(n,1);
+
+      }
+
+    }
+
+  }
+
+
+  save();
+
+  detail();
+
+}
+
+
+function draw(id,a,doneFlag){
+
+  let q=search.value.toLowerCase();
+
+  let c=document.getElementById(id);
+
+  c.innerHTML='';
+
+
+  a.filter(
+
+    x=>
+
+    (x.name+' '+x.code)
+
+    .toLowerCase()
+
+    .includes(q)
+
+  )
+
+  .forEach(i=>{
+
+    let e=document.createElement('div');
+
+    e.className='item'+
+
+    (doneFlag?' done':'');
+
+
+    e.innerHTML=`
+
+    <button class="check soft">
+
+    ${doneFlag?'✓':'○'}
+
+    </button>
+
+    <div>
+
+    ${i.code
+
+    ? '<div class="code">'+i.code+'</div>'
+
+    : ''}
+
+    <div class="name">${i.name}</div>
+
+    </div>
+
+    `;
+
+
+    e.querySelector('button')
+    .onclick=()=>toggle(i.id);
+
+
+    c.appendChild(e);
+
+  });
+
+
+  if(!c.innerHTML){
+
+    c.innerHTML=
+
+    '<div class="muted" style="padding:24px;text-align:center">Sin productos aquí.</div>';
+
+  }
+
+}
+
+
+function detail(){
+
+  let l=L();
+
+  if(!l){
+
+    show('home');
+
+    return;
+
+  }
+
+
+  dTitle.textContent=l.title;
+
+
+  let p=l.items.filter(i=>!i.done);
+
+  let d=l.items.filter(i=>i.done);
+
+
+  count.textContent=
+
+  `${d.length} de ${l.items.length} comprados · faltan ${p.length}`;
+
+
+  pTab.classList.toggle('on',tab=='p');
+
+  dTab.classList.toggle('on',tab=='d');
+
+
+  pending.classList.toggle('hide',tab!='p');
+
+  done.classList.toggle('hide',tab!='d');
+
+
+  draw('pending',p,false);
+
+  draw('done',d,true);
+
+}
+
+
+newBtn.onclick=()=>show('new');
+
+createBtn.onclick=create;
+
+plus.onclick=addOne;
+
+
+quick.onkeydown=e=>{
+
+  if(e.key=='Enter'){
+
+    e.preventDefault();
+
+    addOne();
+
+  }
+
+};
+
+
+bulkBtn.onclick=addBulk;
+
+search.oninput=detail;
+
+
+pTab.onclick=()=>{
+
+  tab='p';
+
+  detail();
+
+};
+
+
+dTab.onclick=()=>{
+
+  tab='d';
+
+  detail();
+
+};
+
+
+undo.onclick=undoLast;
+
+
+rename.onclick=()=>{
+
+  let l=L();
+
+  let n=prompt(
+
+    'Nuevo nombre:',
+
+    l.title
+
+  );
+
+
+  if(n && n.trim()){
+
+    l.title=n.trim();
+
+    save();
+
+    detail();
+
+  }
+
+};
+
+
+del.onclick=()=>{
+
+  let l=L();
+
+
+  if(confirm('¿Borrar esta lista?')){
+
+    db.lists=db.lists.filter(
+
+      x=>x.id!=l.id
+
+    );
+
+
+    save();
+
+    show('home');
+
+  }
+
+};
+
+
+home();
+
+
+if('serviceWorker' in navigator){
+
+  window.addEventListener('load',()=>{
+
+    navigator.serviceWorker
+    .register('./sw.js');
+
+  });
+
+}
+
+</script>
+
+</body>
+
+</html>
